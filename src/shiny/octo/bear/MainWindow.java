@@ -6,6 +6,8 @@
 package shiny.octo.bear;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -48,7 +50,7 @@ public class MainWindow extends javax.swing.JFrame {
         taText = new javax.swing.JTextArea();
         tfPath = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        lblDist = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -56,11 +58,6 @@ public class MainWindow extends javax.swing.JFrame {
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton1MouseClicked(evt);
-            }
-        });
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
             }
         });
 
@@ -98,11 +95,6 @@ public class MainWindow extends javax.swing.JFrame {
         jTabbedPane1.addTab("tab1", panelOne);
 
         jButton2.setText("save");
-        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton2MouseClicked(evt);
-            }
-        });
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -160,7 +152,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("jLabel1");
+        lblDist.setText("jLabel1");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -168,14 +160,14 @@ public class MainWindow extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(63, 63, 63)
-                .addComponent(jLabel1)
+                .addComponent(lblDist)
                 .addContainerGap(271, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jLabel1)
+                .addComponent(lblDist)
                 .addContainerGap(218, Short.MAX_VALUE))
         );
 
@@ -224,49 +216,47 @@ public class MainWindow extends javax.swing.JFrame {
 	}
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-	// TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void jPanel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseClicked
 	// TODO add your handling code here:
+	Point newPoint = evt.getPoint();
+	
+	double dist = Math.sqrt((newPoint.getX() - this.lastOne.getX())*(newPoint.getX() - this.lastOne.getX()) + (newPoint.getY() - this.lastOne.getY())*(newPoint.getY() - this.lastOne.getY()));
+	this.lblDist.setText(dist+"px");
+	this.lastOne = newPoint;
     }//GEN-LAST:event_jPanel4MouseClicked
 
-    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-	// TODO add your handling code here:
-    }//GEN-LAST:event_jButton2MouseClicked
-
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-	System.out.print("Loading to " + this.tfPath.getText() + "\n");
-	BufferedReader br = null;
-	try {
-	    br = new BufferedReader(new FileReader(this.tfPath.getText()));
-	} catch (FileNotFoundException ex) {
-	    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-	}
-	try {
-	    StringBuilder sb = new StringBuilder();
-	    String line = br.readLine();
+        System.out.print("Loading to " + this.tfPath.getText() + "\n");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(this.tfPath.getText()));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
 
-	    while (line != null) {
-		sb.append(line);
-		sb.append(System.lineSeparator());
-		line = br.readLine();
-	    }
-	    this.taText.setText(sb.toString());
-	} catch (IOException ex) {
-	    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-	} finally {
-	    try {
-		if (br != null) {
-		    br.close();
-		}
-	    } catch (IOException ex) {
-		Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-	    }
-	}
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            this.taText.setText(sb.toString());
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_jButton3MouseClicked
 
+    Point lastOne = new Point(0, 0);
     /**
      * @param args the command line arguments
      */
@@ -307,11 +297,11 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel lblDist;
     private javax.swing.JPanel panelOne;
     private javax.swing.JTextArea taText;
     private java.awt.TextArea textArea1;
