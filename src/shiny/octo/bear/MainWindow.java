@@ -190,17 +190,26 @@ public class MainWindow extends javax.swing.JFrame {
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
 	// TODO add your handling code here:
 	System.out.print("jButton1MouseClicked\n");
-	Random r = new Random();
-	Color c = new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255));
-	panelOne.setBackground(c);
+	this.goBg = !this.goBg;
+//	Random r = new Random();
+//	Color c = new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255));
+//	panelOne.setBackground(c);
+	if (!this.chColorThread.isAlive()) {
+	    this.chColorThread.start();
+	}
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jCheckBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox1MouseClicked
 	// TODO add your handling code here:
 	System.out.print("jCheckBox1MouseClicked\n");
-	Random r = new Random();
-	Color c = new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255));
-	jCheckBox1.setForeground(c);
+	this.goTxt = !this.goTxt;
+
+	if (!this.chColorThread.isAlive()) {
+	    this.chColorThread.start();
+	}
+//	Random r = new Random();
+//	Color c = new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255));
+//	jCheckBox1.setForeground(c);
     }//GEN-LAST:event_jCheckBox1MouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -219,44 +228,79 @@ public class MainWindow extends javax.swing.JFrame {
     private void jPanel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseClicked
 	// TODO add your handling code here:
 	Point newPoint = evt.getPoint();
-	
-	double dist = Math.sqrt((newPoint.getX() - this.lastOne.getX())*(newPoint.getX() - this.lastOne.getX()) + (newPoint.getY() - this.lastOne.getY())*(newPoint.getY() - this.lastOne.getY()));
-	this.lblDist.setText(dist+"px");
+
+	double dist = Math.sqrt((newPoint.getX() - this.lastOne.getX()) * (newPoint.getX() - this.lastOne.getX()) + (newPoint.getY() - this.lastOne.getY()) * (newPoint.getY() - this.lastOne.getY()));
+	this.lblDist.setText(dist + "px");
 	this.lastOne = newPoint;
     }//GEN-LAST:event_jPanel4MouseClicked
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-        System.out.print("Loading to " + this.tfPath.getText() + "\n");
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(this.tfPath.getText()));
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
+	System.out.print("Loading to " + this.tfPath.getText() + "\n");
+	BufferedReader br = null;
+	try {
+	    br = new BufferedReader(new FileReader(this.tfPath.getText()));
+	} catch (FileNotFoundException ex) {
+	    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	try {
+	    StringBuilder sb = new StringBuilder();
+	    String line = br.readLine();
 
-            while (line != null) {
-                sb.append(line);
-                sb.append(System.lineSeparator());
-                line = br.readLine();
-            }
-            this.taText.setText(sb.toString());
-        } catch (IOException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (br != null) {
-                    br.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+	    while (line != null) {
+		sb.append(line);
+		sb.append(System.lineSeparator());
+		line = br.readLine();
+	    }
+	    this.taText.setText(sb.toString());
+	} catch (IOException ex) {
+	    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+	} finally {
+	    try {
+		if (br != null) {
+		    br.close();
+		}
+	    } catch (IOException ex) {
+		Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+	    }
+	}
     }//GEN-LAST:event_jButton3MouseClicked
 
-    Point lastOne = new Point(0, 0);
+    private boolean goBg = false;
+    private boolean goTxt = false;
+    private Point lastOne = new Point(0, 0);
+    private Thread chColorThread =  new Thread() {
+		public void run() {
+		    
+		    int bgC = 0;
+		    int txtC = 180;
+		    while (true) {	
+			try {
+			    Thread.sleep(100);
+			} catch (InterruptedException ex) {
+			    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+			}
+			if(bgC > 360){
+			    bgC =0;
+			}
+			if(txtC > 360){
+			    txtC =0;
+			}
+			
+			if(goBg){
+			    Color c = Color.getHSBColor((float) (bgC/360.0), 1, 1);
+			    bgC++;
+			    panelOne.setBackground(c);
+			}
+			if(goTxt){
+			    Color c = Color.getHSBColor((float) (txtC/360.0), 1, 1);
+			    txtC++;
+			    jCheckBox1.setForeground(c);
+			}
+			
+		    }
+		}
+	    };
+
     /**
      * @param args the command line arguments
      */
@@ -283,7 +327,6 @@ public class MainWindow extends javax.swing.JFrame {
 	    java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	}
 	//</editor-fold>
-
 	/* Create and display the form */
 	java.awt.EventQueue.invokeLater(new Runnable() {
 	    public void run() {
